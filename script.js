@@ -3,6 +3,7 @@
 // State management
 let loveCount = parseInt(localStorage.getItem('denguin_love_clicks')) || 0;
 let soundEnabled = localStorage.getItem('denguin_sound_enabled') !== 'false'; // Default to true
+let previousLevel = Math.floor(loveCount / 100) + 1;
 
 // DOM Elements
 const heartBtn = document.getElementById('heartBtn');
@@ -14,6 +15,9 @@ const soundToggle = document.getElementById('soundToggle');
 const particleCanvas = document.getElementById('particleCanvas');
 const ctx = particleCanvas.getContext('2d');
 const actionButtons = document.querySelectorAll('.action-btn');
+const loveOverlay = document.getElementById('loveOverlay');
+const closeOverlayBtn = document.getElementById('closeOverlayBtn');
+const overlayBackdrop = document.getElementById('overlayBackdrop');
 
 // Initialize UI States
 loveCounter.textContent = loveCount;
@@ -127,6 +131,27 @@ function playChime(type) {
             
             osc.start(now + idx * 0.06);
             osc.stop(now + idx * 0.06 + 0.26);
+        });
+    }
+    else if (type === 'levelup') {
+        // Level up: beautiful ascending major 7th arpeggio chime
+        const notes = [261.63, 329.63, 392.00, 493.88, 523.25]; // C4, E4, G4, B4, C5
+        notes.forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+            
+            gain.gain.setValueAtTime(0.0, now);
+            gain.gain.linearRampToValueAtTime(0.12, now + idx * 0.1 + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.4);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start(now + idx * 0.1);
+            osc.stop(now + idx * 0.1 + 0.42);
         });
     }
 }
@@ -273,7 +298,12 @@ function updateLoveMeter(shouldLevelUpNotify = true) {
     const levelLimit = 100;
     const progress = loveCount % levelLimit;
     const currentLevel = Math.floor(loveCount / levelLimit) + 1;
-    const percentage = (progress / levelLimit) * 100;
+    let percentage = (progress / levelLimit) * 100;
+
+    // Show 100% full before resetting when leveling up
+    if (progress === 0 && loveCount > 0) {
+        percentage = 100;
+    }
 
     loveBar.style.width = `${percentage}%`;
 
@@ -297,7 +327,90 @@ function updateLoveMeter(shouldLevelUpNotify = true) {
         heartGlow.style.transform = `scale(${1 + intensity * 0.4})`;
         heartGlow.style.opacity = `${0.25 + intensity * 0.4}`;
     }
+
+    // Trigger overlay if level goes up during interaction
+    if (shouldLevelUpNotify && currentLevel > previousLevel) {
+        triggerLoveOverlay();
+    }
+    previousLevel = currentLevel;
 }
+
+// Show the premium full-screen "Eu amo o Lu" overlay
+let showerIntervalId = null;
+function triggerLoveOverlay() {
+    loveOverlay.classList.remove('hidden');
+    loveOverlay.setAttribute('aria-hidden', 'false');
+    
+    // Play level up chime
+    playChime('levelup');
+
+    // Trigger massive particles burst on the screen center
+    const screenX = window.innerWidth / 2;
+    const screenY = window.innerHeight / 2;
+    
+    spawnBurst(screenX, screenY, 40);
+    setTimeout(() => spawnBurst(screenX - 120, screenY - 60, 25), 200);
+    setTimeout(() => spawnBurst(screenX + 120, screenY - 60, 25), 400);
+    setTimeout(() => spawnBurst(screenX, screenY + 120, 25), 600);
+
+    // Spawn a continuous shower of hearts and sparkles
+    if (showerIntervalId) clearInterval(showerIntervalId);
+    showerIntervalId = setInterval(() => {
+        if (loveOverlay.classList.contains('hidden')) {
+            clearInterval(showerIntervalId);
+            return;
+        }
+        
+        const startX = Math.random() * window.innerWidth;
+        const startY = window.innerHeight + 50;
+
+        const emojiEl = document.createElement('div');
+        emojiEl.className = 'flying-emoji';
+        
+        const emojiPool = ['❤️', '💖', '💝', '✨', '🥰', '😘', '🌸', '🌹'];
+        emojiEl.textContent = emojiPool[Math.floor(Math.random() * emojiPool.length)];
+        
+        const targetX = (Math.random() - 0.5) * 250;
+        const targetY = -(window.innerHeight + 120);
+        const rotation = (Math.random() - 0.5) * 180;
+
+        emojiEl.style.left = `${startX}px`;
+        emojiEl.style.top = `${startY}px`;
+        emojiEl.style.setProperty('--tx', `${targetX}px`);
+        emojiEl.style.setProperty('--ty', `${targetY}px`);
+        emojiEl.style.setProperty('--rot', `${rotation}deg`);
+
+        document.body.appendChild(emojiEl);
+
+        emojiEl.addEventListener('animationend', () => {
+            emojiEl.remove();
+        });
+    }, 120);
+
+    // Stop emoji shower automatically after 4 seconds if not closed
+    setTimeout(() => {
+        if (showerIntervalId) {
+            clearInterval(showerIntervalId);
+        }
+    }, 4000);
+}
+
+function closeLoveOverlay() {
+    loveOverlay.classList.add('hidden');
+    loveOverlay.setAttribute('aria-hidden', 'true');
+    if (showerIntervalId) {
+        clearInterval(showerIntervalId);
+    }
+}
+
+// Overlay close event listeners
+closeOverlayBtn.addEventListener('click', closeLoveOverlay);
+overlayBackdrop.addEventListener('click', closeLoveOverlay);
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeLoveOverlay();
+    }
+});
 
 // Sound Settings Actions
 function updateSoundToggleButton() {

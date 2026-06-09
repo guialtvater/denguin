@@ -74,6 +74,26 @@
         </footer>
     </div>
 
+    <!-- Love Overlay (Hidden by default) -->
+    <div id="loveOverlay" class="love-overlay hidden" aria-hidden="true" role="dialog" aria-labelledby="overlayTitle">
+        <div class="love-overlay-backdrop" id="overlayBackdrop"></div>
+        <div class="love-overlay-card">
+            <div class="love-overlay-decorations">
+                <span class="decor-emoji float-1">💖</span>
+                <span class="decor-emoji float-2">✨</span>
+                <span class="decor-emoji float-3">🌟</span>
+            </div>
+            <div class="love-overlay-heart">
+                <svg viewBox="0 0 24 24" class="overlay-heart-svg">
+                    <path fill="url(#heartGradient)" filter="url(#heartShadow)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </div>
+            <h2 id="overlayTitle" class="love-overlay-title">Eu amo o Lu</h2>
+            <p class="love-overlay-message">O amorômetro transbordou de carinho! 💕</p>
+            <button id="closeOverlayBtn" class="love-overlay-btn">Continuar Amando 💖</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
