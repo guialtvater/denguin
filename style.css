@@ -1,0 +1,410 @@
+/* Style sheet for "Eu Amo Meu Denguin" */
+
+/* Design Tokens & Theme Variables */
+:root {
+    --bg-dark: hsl(330, 45%, 7%);
+    --bg-mid: hsl(340, 40%, 12%);
+    --bg-light: hsl(350, 45%, 22%);
+    
+    --color-text-primary: hsl(0, 0%, 96%);
+    --color-text-secondary: hsl(340, 30%, 75%);
+    --color-accent: hsl(345, 100%, 65%);
+    --color-accent-glow: rgba(255, 31, 75, 0.5);
+    --color-gold: hsl(45, 100%, 70%);
+
+    --glass-bg: rgba(28, 12, 18, 0.55);
+    --glass-border: rgba(255, 117, 140, 0.18);
+    --glass-border-hover: rgba(255, 117, 140, 0.35);
+    --glass-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.5);
+
+    --font-heading: 'Comfortaa', cursive, sans-serif;
+    --font-body: 'Outfit', sans-serif;
+}
+
+/* Base resets & layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background: radial-gradient(circle at 50% 50%, var(--bg-light) 0%, var(--bg-mid) 50%, var(--bg-dark) 100%);
+    background-size: 150% 150%;
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+    padding: 1.5rem;
+    animation: gradientShift 20s ease infinite;
+}
+
+/* Background gradient shift animation */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Background Canvas */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Layout Container */
+.container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    text-align: center;
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sound Toggle Button */
+.sound-toggle {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 100;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.sound-toggle:hover {
+    transform: scale(1.1);
+    border-color: var(--glass-border-hover);
+    color: var(--color-accent);
+}
+
+.sound-toggle:active {
+    transform: scale(0.95);
+}
+
+.sound-toggle svg {
+    transition: transform 0.2s ease;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Header Text Styles */
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 6vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.2;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.highlight {
+    background: linear-gradient(135deg, hsl(343, 100%, 66%) 0%, var(--color-accent) 50%, var(--color-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    filter: drop-shadow(0 2px 8px rgba(255, 31, 75, 0.3));
+}
+
+.subtitle {
+    font-size: clamp(0.9rem, 3vw, 1.05rem);
+    color: var(--color-text-secondary);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+/* Heart Wrapper and Sizing */
+.heart-wrapper {
+    position: relative;
+    width: min(220px, 48vw);
+    height: min(220px, 48vw);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Outer Pulsating Heart Glow */
+.heart-pulse-glow {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(20px);
+    opacity: 0.25;
+    z-index: 1;
+    pointer-events: none;
+    transform: scale(1);
+    animation: heartGlowPulse 2s infinite ease-in-out;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+@keyframes heartGlowPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.25;
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: 0.45;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.25;
+    }
+}
+
+/* Heart Button */
+.heart-button {
+    position: relative;
+    z-index: 2;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1);
+    animation: heartbeat 2s infinite ease-in-out;
+    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.heart-button:hover {
+    transform: scale(1.08) rotate(3deg);
+    animation-play-state: paused;
+}
+
+.heart-button:active {
+    transform: scale(0.9) rotate(-3deg);
+}
+
+.giant-heart-svg {
+    width: 100%;
+    height: 100%;
+    transition: filter 0.3s ease;
+}
+
+/* Heartbeat pulse animation */
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.12); }
+    28% { transform: scale(1.04); }
+    42% { transform: scale(1.16); }
+    70% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+/* Glassmorphic Lovemeter Card */
+.lovemeter-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 1.5rem 2rem;
+    width: 100%;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--glass-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.lovemeter-card:hover {
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px);
+}
+
+.lovemeter-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--color-text-secondary);
+    font-weight: 800;
+}
+
+.lovemeter-val {
+    font-size: 2.75rem;
+    font-weight: 800;
+    font-family: var(--font-heading);
+    color: var(--color-text-primary);
+    line-height: 1;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Progress bar container */
+.lovemeter-bar-container {
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Progress bar inside */
+.lovemeter-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-accent) 0%, hsl(355, 100%, 75%) 50%, var(--color-gold) 100%);
+    border-radius: 6px;
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 10px var(--color-accent-glow);
+}
+
+.lovemeter-status {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+    min-height: 1.2rem;
+}
+
+/* Action Buttons Grid */
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.action-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 0.85rem 0.5rem;
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.action-btn:hover {
+    border-color: var(--glass-border-hover);
+    background: rgba(255, 117, 140, 0.1);
+    transform: translateY(-3px);
+}
+
+.action-btn:active {
+    transform: translateY(1px);
+}
+
+.action-btn .emoji {
+    font-size: 1.6rem;
+    transition: transform 0.3s ease;
+}
+
+.action-btn:hover .emoji {
+    transform: scale(1.2) rotate(8deg);
+}
+
+/* Footer Section */
+.footer {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 1rem;
+    letter-spacing: 0.5px;
+}
+
+/* Custom full-screen temporary emoji class generated by script */
+.flying-emoji {
+    position: fixed;
+    pointer-events: none;
+    z-index: 999;
+    font-size: 2.5rem;
+    user-select: none;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+    animation: flyUpAndFade 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes flyUpAndFade {
+    0% {
+        transform: translate(0, 0) scale(0.3) rotate(0deg);
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(var(--rot));
+        opacity: 0;
+    }
+}
+
+/* Responsive Overrides */
+@media (max-width: 400px) {
+    body {
+        padding: 1rem;
+    }
+    .container {
+        gap: 1.5rem;
+    }
+    .lovemeter-card {
+        padding: 1.2rem 1.5rem;
+    }
+    .actions-grid {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+    }
+    .action-btn {
+        flex-direction: row;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        gap: 0.75rem;
+    }
+    .action-btn .emoji {
+        font-size: 1.3rem;
+    }
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Uma página interativa de carinho e amor dedicada ao meu denguin.">
+    <title>Eu Amo Meu Denguin 💖</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Canvas for Particles -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Sound Toggle -->
+    <button id="soundToggle" class="sound-toggle" aria-label="Alternar som">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sound-icon-on"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sound-icon-off hidden"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v6a3 3 0 0 0 5.12 2.12M18.8 4A10 10 0 0 1 19 19M15.54 8.46a5 5 0 0 1 .1 5.9"></path><path d="M11 5L6 9H2v6h3"></path></svg>
+    </button>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Eu amo meu <span class="highlight">denguin</span></h1>
+            <p class="subtitle">Clique no coração para espalhar mais amor</p>
+        </header>
+
+        <!-- Giant Heart Area -->
+        <div class="heart-wrapper">
+            <div class="heart-pulse-glow" id="heartGlow"></div>
+            <button class="heart-button" id="heartBtn" aria-label="Enviar Amor">
+                <svg viewBox="0 0 24 24" class="giant-heart-svg">
+                    <defs>
+                        <radialGradient id="heartGradient" cx="30%" cy="30%" r="70%">
+                            <stop offset="0%" stop-color="#ff758c" />
+                            <stop offset="60%" stop-color="#ff1f4b" />
+                            <stop offset="100%" stop-color="#b80024" />
+                        </radialGradient>
+                        <filter id="heartShadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#ff1f4b" flood-opacity="0.4" />
+                        </filter>
+                    </defs>
+                    <path fill="url(#heartGradient)" filter="url(#heartShadow)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Love Statistics (Lovemeter) -->
+        <div class="lovemeter-card">
+            <div class="lovemeter-label">AMORÔMETRO</div>
+            <div class="lovemeter-val" id="loveCounter">0</div>
+            <div class="lovemeter-bar-container">
+                <div class="lovemeter-bar" id="loveBar"></div>
+            </div>
+            <p class="lovemeter-status" id="loveStatus">Clique para iniciar o medidor de carinho!</p>
+        </div>
+
+        <!-- Action Grid -->
+        <div class="actions-grid">
+            <button class="action-btn" data-type="kiss">
+                <span class="emoji">😘</span> Mandar Beijo
+            </button>
+            <button class="action-btn" data-type="hug">
+                <span class="emoji">🤗</span> Dar Abraço
+            </button>
+            <button class="action-btn" data-type="cafune">
+                <span class="emoji">💆‍♂️</span> Fazer Cafuné
+            </button>
+        </div>
+
+        <footer class="footer">
+            <p>Criado com todo o amor do mundo ✨</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
